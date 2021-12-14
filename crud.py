@@ -7,7 +7,7 @@ def tether_price():
 
     return tether
 
-def buy(quantity: int, token: str, buyPercent: float=10):
+async def buy(quantity: int, token: str, buyPercent: float=10):
 
     coin_list = [
       "btc",
@@ -69,7 +69,7 @@ def buy(quantity: int, token: str, buyPercent: float=10):
     for i in range(1,len(nobitex_coin_list)+1):
       j=i-1
 
-      response1=requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin_list[i - 1][0])
+      response1=await requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin_list[i - 1][0])
       response= response1.json()
       print("eeeeee",response)
 
@@ -93,7 +93,7 @@ def buy(quantity: int, token: str, buyPercent: float=10):
 
       binance_price={}
       print('sssssssssss')
-      response1=requests.get("https://api.binance.com/api/v3/ticker/price?symbol="+binance_coin_list[j])
+      response1=await requests.get("https://api.binance.com/api/v3/ticker/price?symbol="+binance_coin_list[j])
       print('dddddddddddddd')
       response=response1.json()
       price= response["price"]
@@ -115,14 +115,16 @@ def buy(quantity: int, token: str, buyPercent: float=10):
         }
 
         url="https://api.nobitex.ir/market/orders/add"
-        response1 = requests.post(url, headers=config, data=buy_data)
+        response1 = await requests.post(url, headers=config, data=buy_data)
         response_buy[j]=response1.json()
 
 
     return response_buy
 
 
-def sell(quantity: int, token: str, sellPercent: float = 10):
+
+
+async def sell(quantity: int, token: str, sellPercent: float = 10):
   coin_list = [
     "btc",
     "eth",
@@ -183,7 +185,7 @@ def sell(quantity: int, token: str, sellPercent: float = 10):
   for i in range(1, len(nobitex_coin_list) + 1):
     j = i - 1
 
-    response1 = requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin_list[i - 1][0])
+    response1 = await requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin_list[i - 1][0])
     response = response1.json()
     print("eeeeee", response)
 
@@ -207,7 +209,7 @@ def sell(quantity: int, token: str, sellPercent: float = 10):
 
     binance_price = {}
     print('sssssssssss')
-    response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin_list[j])
+    response1 = await requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin_list[j])
     print('dddddddddddddd')
     response = response1.json()
     price = response["price"]
