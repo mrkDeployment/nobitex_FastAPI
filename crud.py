@@ -1,4 +1,6 @@
 import requests
+from fastapi import HTTPException
+
 
 def tether_price():
     response1=requests.get('https://api.nobitex.ir/v2/orderbook/USDTIRT')
@@ -98,9 +100,12 @@ def sell(quantity: float,
         nobitex_price_ask= price_ask / nobitex_coin_percent
 
   binance_price = {}
-  print('sssssssssss')
-  response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin)
-  print('dddddddddddddd')
+
+  try:
+    response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin)
+  except:
+    raise HTTPException(status_code=402, detail="binance api don't work because of proxy failed")
+
   response = response1.json()
   price = response["price"]
   binance_price = float(price)
