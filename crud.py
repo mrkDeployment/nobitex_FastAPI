@@ -87,7 +87,7 @@ def sell(quantity: float,
   for k in range(16):
     price_sum_ask += float(response["asks"][k][0]) * float(response["asks"][k][1])
 
-    if (quantity * response["asks"][0][0] * 3 < price_sum_ask):
+    if (quantity * float(response["asks"][0][0]) * 3 < price_sum_ask):
       price_ask = float(response["asks"][k][0]) / tether
       nobitex_price_ask = price_ask / nobitex_coin_percent
       break
@@ -98,7 +98,6 @@ def sell(quantity: float,
 
 
   response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin)
-  print('dddddddddddddd')
   response = response1.json()
   price = response["price"]
   binance_price = float(price)
@@ -109,7 +108,7 @@ def sell(quantity: float,
     # allowed_price = tether * 0.9875 * binance_price
     # amount = str(quantity / (allowed_price * nobitex_coin_percent))
     config = {"Authorization": "Token " + token}
-
+    print(str(quantity))
     sell_data = {
       "type": "sell",
       "execution": "market",
@@ -117,6 +116,7 @@ def sell(quantity: float,
       "dstCurrency": "rls",
       "amount": str(quantity),
     }
+    print(str(quantity))
 
     url = "https://api.nobitex.ir/market/orders/add"
     response1 = requests.post(url, headers=config, data=sell_data)
