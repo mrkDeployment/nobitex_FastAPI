@@ -79,23 +79,23 @@ def sell(quantity: float,
   response = response1.json()
   print("eeeeee", response)
 
-  price_sum_bid = 0
+  price_sum_ask = 0
 
   tether = float(tether_price())
 
-  nobitex_price_bid = {}
+  nobitex_price_ask = {}
 
   for k in range(16):
-    price_sum_bid += float(response["bids"][k][0]) * float(response["bids"][k][1])
+    price_sum_ask += float(response["asks"][k][0]) * float(response["asks"][k][1])
 
-    if (quantity * 3 * float(response["bids"][0][0]) < price_sum_bid):
-      price_bid = float(response["bids"][k][0]) / tether
-      nobitex_price_bid = price_bid / nobitex_coin_percent
+    if (quantity * 3 * float(response["asks"][0][0]) < price_sum_ask):
+      price_ask = float(response["asks"][k][0]) / tether
+      nobitex_price_ask = price_ask / nobitex_coin_percent
       break
     else:
       if (k == 15):
-        price_bid = float(response["bids"][15][0]) * 1.03 / tether
-        nobitex_price_bid: price_bid / nobitex_coin_percent
+        price_ask = float(response["asks"][15][0]) * 1.03 / tether
+        nobitex_price_ask= price_ask / nobitex_coin_percent
 
   binance_price = {}
   print('sssssssssss')
@@ -107,7 +107,7 @@ def sell(quantity: float,
 
   response_sell = {}
 
-  if ((nobitex_price_bid - binance_price) / binance_price) * 100 > sellPercent:
+  if ((nobitex_price_ask - binance_price) / binance_price) * 100 > sellPercent:
     allowed_price = tether * 0.9875 * binance_price
     amount = str(quantity / (allowed_price * nobitex_coin_percent))
     config = {"Authorization": "Token " + token}
