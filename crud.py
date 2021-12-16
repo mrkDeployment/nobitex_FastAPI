@@ -77,37 +77,41 @@ def sell(quantity: float,
 
   response1 = requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin)
   response = response1.json()
+  print("eeeeee", response)
 
-  price_sum_ask = 0
+  price_sum_bid = 0
 
   tether = float(tether_price())
 
-  nobitex_price_ask = {}
+  nobitex_price_bid = {}
 
   for k in range(16):
-    price_sum_ask += float(response["asks"][k][0]) * float(response["asks"][k][1])
+    price_sum_bid += float(response["bids"][k][0]) * float(response["bids"][k][1])
 
-    if (quantity * float(response["asks"][0][0]) * 3 < price_sum_ask):
-      price_ask = float(response["asks"][k][0]) / tether
-      nobitex_price_ask = price_ask / nobitex_coin_percent
+    if (quantity * 3 * float(response["bids"][0][0]) < price_sum_bid):
+      price_bid = float(response["bids"][k][0]) / tether
+      nobitex_price_bid = price_bid / nobitex_coin_percent
       break
     else:
       if (k == 15):
-        price_ask = float(response["asks"][15][0]) * 1.03 / tether
-        nobitex_price_ask= price_ask / nobitex_coin_percent
+        price_bid = float(response["bids"][15][0]) * 1.03 / tether
+        nobitex_price_bid: price_bid / nobitex_coin_percent
 
+  binance_price = {}
+  print('sssssssssss')
   response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin)
+  print('dddddddddddddd')
   response = response1.json()
   price = response["price"]
   binance_price = float(price)
 
   response_sell = {}
 
-  if ((nobitex_price_ask - binance_price) / binance_price) * 100 > sellPercent:
-    # allowed_price = tether * 0.9875 * binance_price
-    # amount = str(quantity / (allowed_price * nobitex_coin_percent))
+  if ((nobitex_price_bid - binance_price) / binance_price) * 100 > sellPercent:
+    allowed_price = tether * 0.9875 * binance_price
+    amount = str(quantity / (allowed_price * nobitex_coin_percent))
     config = {"Authorization": "Token " + token}
-    print(str(quantity))
+
     sell_data = {
       "type": "sell",
       "execution": "market",
@@ -115,7 +119,6 @@ def sell(quantity: float,
       "dstCurrency": "rls",
       "amount": str(quantity),
     }
-    print(str(quantity))
 
     url = "https://api.nobitex.ir/market/orders/add"
     response1 = requests.post(url, headers=config, data=sell_data)
