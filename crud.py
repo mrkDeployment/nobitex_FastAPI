@@ -67,12 +67,14 @@ def buy(quantity: int, token: str,
     return response_buy
 
 
-def sell(quantity: int, token: str,
-        nobitex_coin: str,
+def sell(quantity: float,
+         token: str,
+         nobitex_coin: str,
         nobitex_coin_percent: int,
         binance_coin: str,
         coin: str,
         sellPercent: float = 10):
+
   response1 = requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin)
   response = response1.json()
   print("eeeeee", response)
@@ -109,12 +111,13 @@ def sell(quantity: int, token: str,
     allowed_price = tether * 0.9875 * binance_price
     amount = str(quantity / (allowed_price * nobitex_coin_percent))
     config = {"Authorization": "Token " + token}
+
     sell_data = {
       "type": "sell",
       "execution": "market",
       "srcCurrency": coin,
       "dstCurrency": "rls",
-      "amount": amount,
+      "amount": str(quantity),
     }
 
     url = "https://api.nobitex.ir/market/orders/add"
@@ -122,3 +125,15 @@ def sell(quantity: int, token: str,
     response_sell = response1.json()
 
   return response_sell
+
+
+
+def candle(symbol: str,interval: str='30m',limit: str ='6'):
+
+  changed_percent = 0
+
+  candle1=requests.get("https://api.binance.com/api/v3/klines?interval=" + interval + "&limit=" + limit + "&symbol=" + symbol, {})
+  candle=candle1.json()
+  changed_percent = (candle[int(limit) - 1][4] - candle[0][1]) / candle[0][1] * 100
+
+  return changed_percent
