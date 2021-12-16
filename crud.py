@@ -34,7 +34,7 @@ def buy(quantity: int, token: str,
       else:
         if (k == 15):
           price_bid = float(response["bids"][15][0]) * 1.03 / tether
-          nobitex_price_bid: price_bid / nobitex_coin_percent
+          nobitex_price_bid= price_bid / nobitex_coin_percent
 
     binance_price={}
     print('sssssssssss')
@@ -94,8 +94,7 @@ def sell(quantity: float,
     else:
       if (k == 15):
         price_ask = float(response["asks"][15][0]) * 1.03 / tether
-        nobitex_price_ask: price_ask / nobitex_coin_percent
-
+        nobitex_price_ask= price_ask / nobitex_coin_percent
 
   response1 = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=" + binance_coin)
   response = response1.json()
