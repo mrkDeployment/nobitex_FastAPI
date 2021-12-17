@@ -79,7 +79,6 @@ def sell(quantity: float,
 
   response1 = requests.get('https://api.nobitex.ir/v2/orderbook/' + nobitex_coin)
   response = response1.json()
-  print("eeeeee", response)
 
   price_sum_ask = 0
 
@@ -136,8 +135,11 @@ def sell(quantity: float,
 def candle(symbol: str,interval: str='30m',limit: str ='6'):
 
   changed_percent = 0
+  try:
+    candle1=requests.get("https://api.binance.com/api/v3/klines?interval=" + interval + "&limit=" + limit + "&symbol=" + symbol)
+  except:
+    raise HTTPException(status_code=401,detail="sssssss")
 
-  candle1=requests.get("https://api.binance.com/api/v3/klines?interval=" + interval + "&limit=" + limit + "&symbol=" + symbol, {})
   candle=candle1.json()
   changed_percent = (candle[int(limit) - 1][4] - candle[0][1]) / candle[0][1] * 100
 
